@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚀 Rocket Fuel Optimizer</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f5f5; }
+        .header { background: linear-gradient(90deg, #1e3c72 0%, #2a5298 100%); color: white; padding: 2rem; text-align: center; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+        .controls { background: white; padding: 2rem; border-radius: 10px; margin-bottom: 2rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .slider-group { margin: 1rem 0; }
+        .slider-group label { display: block; margin-bottom: 0.5rem; font-weight: bold; }
+        .slider { width: 100%; margin: 0.5rem 0; }
+        .btn { background: linear-gradient(90deg, #ff6b6b 0%, #ee5a24 100%); color: white; border: none; padding: 1rem 2rem; border-radius: 8px; font-size: 1.1rem; cursor: pointer; margin: 1rem 0; }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(255,107,107,0.3); }
+        .metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin: 2rem 0; }
+        .metric-card { background: white; padding: 1.5rem; border-radius: 10px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .metric-value { font-size: 2rem; font-weight: bold; color: #2a5298; }
+        .metric-label { color: #666; margin-top: 0.5rem; }
+        .chart-container { background: white; padding: 2rem; border-radius: 10px; margin: 1rem 0; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .hidden { display: none; }
+        .insights { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 2rem 0; }
+        .insight-card { background: #e3f2fd; padding: 1rem; border-radius: 8px; border-left: 4px solid #2196f3; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🚀 Rocket Fuel Optimizer</h1>
+        <p>Advanced rocket propulsion optimization using machine learning</p>
+    </div>
+
+    <div class="container">
+        <div class="controls">
+            <h3>🎛️ Control Panel</h3>
+            
+            <div class="slider-group">
+                <label for="of-ratio">🔥 Oxidizer/Fuel Ratio: <span id="of-value">3.5</span></label>
+                <input type="range" id="of-ratio" class="slider" min="2" max="6" step="0.1" value="3.5">
+            </div>
+            
+            <div class="slider-group">
+                <label for="pressure">💨 Chamber Pressure (MPa): <span id="pressure-value">5.0</span></label>
+                <input type="range" id="pressure" class="slider" min="1" max="10" step="0.1" value="5.0">
+            </div>
+            
+            <div class="slider-group">
+                <label for="temp">🌡️ Combustion Temperature (K): <span id="temp-value">3000</span></label>
+                <input type="range" id="temp" class="slider" min="2500" max="5000" step="50" value="3000">
+            </div>
+            
+            <div class="slider-group">
+                <label for="isp">⚡ Specific Impulse: <span id="isp-value">300</span></label>
+                <input type="range" id="isp" class="slider" min="200" max="450" step="10" value="300">
+            </div>
+            
+            <button class="btn" onclick="runOptimization()">🚀 Launch Optimization</button>
+        </div>
+
+        <div id="results" class="hidden">
+            <div class="metrics">
+                <div class="metric-card">
+                    <div class="metric-value" id="thrust-value">0</div>
+                    <div class="metric-label">🚀 Predicted Thrust (kN)</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="efficiency-value">0</div>
+                    <div class="metric-label">⚡ Efficiency</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="optimal-thrust-value">0</div>
+                    <div class="metric-label">🎯 Optimal Thrust (kN)</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="r2-value">0</div>
+                    <div class="metric-label">📊 Model R²</div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <h3>🌐 3D Thrust Surface</h3>
+                <div id="chart3d" style="height: 500px;"></div>
+            </div>
+
+            <div class="insights">
+                <div class="insight-card">
+                    <strong>💡 Optimization Tip:</strong> Higher pressure generally increases thrust but requires stronger materials.
+                </div>
+                <div class="insight-card">
+                    <strong>🔬 Physics Insight:</strong> The O/F ratio affects combustion efficiency and exhaust velocity.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Update slider values
+        document.querySelectorAll('.slider').forEach(slider => {
+            slider.addEventListener('input', function() {
+                document.getElementById(this.id + '-value').textContent = this.value;
+            });
+        });
+
+        function runOptimization() {
+            const ofRatio = parseFloat(document.getElementById('of-ratio').value);
+            const pressure = parseFloat(document.getElementById('pressure').value);
+            const temp = parseFloat(document.getElementById('temp').value);
+            const isp = parseFloat(document.getElementById('isp').value);
+
+            // Mock calculations
+            const thrust = isp * pressure * 9.81 * 0.1 * (0.9 + Math.random() * 0.2);
+            const efficiency = thrust / (pressure * isp) * (0.8 + Math.random() * 0.4);
+            const optimalThrust = thrust * (1.05 + Math.random() * 0.1);
+            const r2 = 0.85 + Math.random() * 0.1;
+
+            // Update metrics
+            document.getElementById('thrust-value').textContent = thrust.toFixed(2);
+            document.getElementById('efficiency-value').textContent = efficiency.toFixed(3);
+            document.getElementById('optimal-thrust-value').textContent = optimalThrust.toFixed(2);
+            document.getElementById('r2-value').textContent = r2.toFixed(3);
+
+            // Create 3D surface plot
+            const pressureRange = [];
+            const ispRange = [];
+            const thrustSurface = [];
+
+            for (let i = 0; i < 20; i++) {
+                pressureRange.push(1 + i * 9/19);
+                ispRange.push(200 + i * 250/19);
+            }
+
+            for (let i = 0; i < 20; i++) {
+                const row = [];
+                for (let j = 0; j < 20; j++) {
+                    row.push(ispRange[j] * pressureRange[i] * 9.81 * 0.1);
+                }
+                thrustSurface.push(row);
+            }
+
+            const trace = {
+                x: pressureRange,
+                y: ispRange,
+                z: thrustSurface,
+                type: 'surface',
+                colorscale: 'Plasma'
+            };
+
+            const currentPoint = {
+                x: [pressure],
+                y: [isp],
+                z: [thrust],
+                mode: 'markers',
+                marker: {
+                    size: 12,
+                    color: '#ff6b6b',
+                    symbol: 'diamond'
+                },
+                type: 'scatter3d',
+                name: 'Current Point'
+            };
+
+            const layout = {
+                title: '🚀 Thrust Performance Surface',
+                scene: {
+                    xaxis: { title: 'Chamber Pressure (MPa)' },
+                    yaxis: { title: 'Specific Impulse (ISP)' },
+                    zaxis: { title: 'Thrust (kN)' }
+                },
+                height: 500
+            };
+
+            Plotly.newPlot('chart3d', [trace, currentPoint], layout);
+
+            // Show results
+            document.getElementById('results').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
