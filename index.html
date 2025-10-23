@@ -3,227 +3,355 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🚀 Rocket Fuel Optimizer</title>
+    <title>Rocket Fuel Optimizer</title>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+        }
+        
         body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            background: #0e1117;
-            color: #fafafa;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, rgba(0,0,0,0.9) 0%, rgba(20,20,40,0.95) 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            backdrop-filter: blur(10px);
         }
-        .main-header {
-            background: linear-gradient(90deg, #1e3c72 0%, #2a5298 100%);
+        
+        .header {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
             padding: 2rem;
-            border-radius: 10px;
-            margin-bottom: 2rem;
-            color: white;
             text-align: center;
+            margin-bottom: 2rem;
         }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 300;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(45deg, #ffffff, #cccccc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .header p {
+            opacity: 0.8;
+            font-size: 1.1rem;
+        }
+        
         .container { 
             display: flex;
             max-width: 1400px; 
             margin: 0 auto; 
-            padding: 2rem; 
+            padding: 0 2rem 2rem 2rem; 
             gap: 2rem;
         }
+        
         .sidebar {
-            width: 300px;
-            background: #262730;
+            width: 320px;
+            background: rgba(255,255,255,0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
             padding: 2rem;
-            border-radius: 10px;
             height: fit-content;
             position: sticky;
             top: 2rem;
         }
+        
         .main-content {
             flex: 1;
-            background: #262730;
+            background: rgba(255,255,255,0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
             padding: 2rem;
-            border-radius: 10px;
         }
+        
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-bottom: 1.5rem;
+            color: #ffffff;
+        }
+        
         .expander {
-            background: #1e1e1e;
-            border-radius: 8px;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
             margin: 1rem 0;
-            border: 1px solid #333;
+            overflow: hidden;
         }
+        
         .expander-header {
-            padding: 1rem;
+            padding: 1rem 1.5rem;
             cursor: pointer;
-            font-weight: bold;
-            border-bottom: 1px solid #333;
+            font-weight: 500;
+            background: rgba(255,255,255,0.02);
+            transition: all 0.3s ease;
         }
+        
+        .expander-header:hover {
+            background: rgba(255,255,255,0.05);
+        }
+        
         .expander-content {
-            padding: 1rem;
+            padding: 1.5rem;
+            border-top: 1px solid rgba(255,255,255,0.08);
         }
-        .slider-group { margin: 1rem 0; }
+        
+        .slider-group { 
+            margin: 1.5rem 0; 
+        }
+        
         .slider-group label { 
             display: block; 
-            margin-bottom: 0.5rem; 
-            font-weight: bold;
-            color: #fafafa;
+            margin-bottom: 0.8rem; 
+            font-weight: 400;
+            color: #ffffff;
+            opacity: 0.9;
         }
+        
         .slider { 
             width: 100%; 
-            margin: 0.5rem 0;
-            background: #1e1e1e;
+            height: 6px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 3px;
+            outline: none;
+            -webkit-appearance: none;
         }
+        
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        
         .btn { 
-            background: linear-gradient(90deg, #ff6b6b 0%, #ee5a24 100%);
+            background: linear-gradient(45deg, #667eea, #764ba2);
             color: white;
             border: none;
             padding: 1rem 2rem;
-            border-radius: 8px;
-            font-size: 1.1rem;
+            border-radius: 12px;
+            font-size: 1rem;
             cursor: pointer;
             margin: 1rem 0;
             width: 100%;
-            font-weight: bold;
+            font-weight: 500;
+            transition: all 0.3s ease;
         }
+        
         .btn:hover { 
             transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(255,107,107,0.3);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
         }
+        
+        .btn-secondary {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
         .metrics { 
             display: grid; 
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
-            gap: 1rem; 
+            gap: 1.5rem; 
             margin: 2rem 0; 
         }
+        
         .metric-card { 
-            background: #1e1e1e;
-            padding: 1.5rem;
-            border-radius: 10px;
+            background: rgba(255,255,255,0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 2rem;
+            border-radius: 16px;
             text-align: center;
-            border: 1px solid #333;
+            transition: all 0.3s ease;
         }
+        
+        .metric-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.2);
+        }
+        
         .metric-value { 
-            font-size: 2rem;
-            font-weight: bold;
-            color: #ff6b6b;
+            font-size: 2.2rem;
+            font-weight: 300;
+            color: #ffffff;
+            margin-bottom: 0.5rem;
         }
+        
         .metric-label { 
-            color: #fafafa;
-            margin-top: 0.5rem;
+            color: rgba(255,255,255,0.7);
             font-size: 0.9rem;
+            font-weight: 400;
         }
+        
         .metric-delta {
             font-size: 0.8rem;
-            color: #4ecdc4;
-            margin-top: 0.25rem;
+            color: #4ade80;
+            margin-top: 0.5rem;
         }
+        
         .chart-container { 
-            background: #1e1e1e;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 16px;
             padding: 2rem;
-            border-radius: 10px;
-            margin: 1rem 0;
-            border: 1px solid #333;
+            margin: 1.5rem 0;
         }
+        
         .tabs {
             display: flex;
             margin: 2rem 0 0 0;
-            border-bottom: 2px solid #333;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
         }
+        
         .tab {
             padding: 1rem 2rem;
             cursor: pointer;
-            background: #1e1e1e;
+            background: transparent;
             border: none;
-            color: #fafafa;
+            color: rgba(255,255,255,0.7);
             border-radius: 8px 8px 0 0;
             margin-right: 0.5rem;
+            transition: all 0.3s ease;
+            font-weight: 400;
         }
+        
         .tab.active {
-            background: #ff6b6b;
-            color: white;
+            background: rgba(102, 126, 234, 0.2);
+            color: #ffffff;
+            border-bottom: 2px solid #667eea;
         }
+        
         .tab-content {
             display: none;
             padding: 2rem 0;
         }
+        
         .tab-content.active {
             display: block;
         }
-        .hidden { display: none; }
+        
+        .hidden { 
+            display: none; 
+        }
+        
         .insights { 
             display: grid; 
             grid-template-columns: 1fr 1fr; 
-            gap: 1rem; 
+            gap: 1.5rem; 
             margin: 2rem 0; 
         }
+        
         .insight-card { 
-            background: #1e3c72;
-            padding: 1rem;
-            border-radius: 8px;
-            border-left: 4px solid #4ecdc4;
-            color: white;
+            background: rgba(102, 126, 234, 0.1);
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            padding: 1.5rem;
+            border-radius: 12px;
+            backdrop-filter: blur(20px);
         }
-        .status-running {
-            background: #fff3cd;
-            border: 1px solid #ffeaa7;
-            border-radius: 8px;
-            padding: 1rem;
-            color: #856404;
-            margin: 1rem 0;
-        }
-        .status-completed {
-            background: #d4edda;
-            border: 1px solid #c3e6cb;
-            border-radius: 8px;
-            padding: 1rem;
-            color: #155724;
-            margin: 1rem 0;
-        }
+        
         .welcome {
-            padding: 2rem;
+            padding: 3rem 2rem;
             text-align: center;
-            color: #fafafa;
+            color: #ffffff;
         }
+        
         .welcome h3 {
-            color: #ff6b6b;
-            margin-bottom: 1rem;
+            font-size: 2rem;
+            font-weight: 300;
+            margin-bottom: 2rem;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
+        
+        .welcome ul, .welcome ol {
+            text-align: left;
+            margin: 2rem 0;
+            padding-left: 2rem;
+            opacity: 0.9;
+        }
+        
+        .welcome li {
+            margin: 0.8rem 0;
+            line-height: 1.6;
+        }
+        
         .checkbox {
-            margin: 1rem 0;
+            margin: 1.5rem 0;
+            display: flex;
+            align-items: center;
         }
+        
         .checkbox input {
-            margin-right: 0.5rem;
+            margin-right: 0.8rem;
+            width: 16px;
+            height: 16px;
+        }
+        
+        .checkbox label {
+            cursor: pointer;
+            opacity: 0.9;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                padding: 1rem;
+            }
+            
+            .sidebar {
+                width: 100%;
+                position: static;
+            }
+            
+            .insights {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="main-header">
-        <h1>🚀 Rocket Fuel Optimizer</h1>
+    <div class="header">
+        <h1>Rocket Fuel Optimizer</h1>
         <p>Advanced rocket propulsion optimization using machine learning and physics simulation</p>
     </div>
 
     <div class="container">
         <div class="sidebar">
-            <h3>🎛️ Control Panel</h3>
+            <h3 class="section-title">Control Panel</h3>
             
             <div class="expander">
                 <div class="expander-header" onclick="toggleExpander('engine-params')">
-                    🔧 Engine Parameters
+                    Engine Parameters
                 </div>
                 <div class="expander-content" id="engine-params">
                     <div class="slider-group">
-                        <label for="of-ratio">🔥 Oxidizer/Fuel Ratio: <span id="of-value">3.5</span></label>
+                        <label for="of-ratio">Oxidizer/Fuel Ratio: <span id="of-value">3.5</span></label>
                         <input type="range" id="of-ratio" class="slider" min="2" max="6" step="0.1" value="3.5">
                     </div>
                     
                     <div class="slider-group">
-                        <label for="pressure">💨 Chamber Pressure (MPa): <span id="pressure-value">5.0</span></label>
+                        <label for="pressure">Chamber Pressure (MPa): <span id="pressure-value">5.0</span></label>
                         <input type="range" id="pressure" class="slider" min="1" max="10" step="0.1" value="5.0">
                     </div>
                     
                     <div class="slider-group">
-                        <label for="temp">🌡️ Combustion Temp (K): <span id="temp-value">3000</span></label>
+                        <label for="temp">Combustion Temperature (K): <span id="temp-value">3000</span></label>
                         <input type="range" id="temp" class="slider" min="2500" max="5000" step="50" value="3000">
                     </div>
                     
                     <div class="slider-group">
-                        <label for="isp">⚡ Specific Impulse: <span id="isp-value">300</span></label>
+                        <label for="isp">Specific Impulse: <span id="isp-value">300</span></label>
                         <input type="range" id="isp" class="slider" min="200" max="450" step="10" value="300">
                     </div>
                 </div>
@@ -231,7 +359,7 @@
 
             <div class="expander">
                 <div class="expander-header" onclick="toggleExpander('opt-settings')">
-                    🎯 Optimization Settings
+                    Optimization Settings
                 </div>
                 <div class="expander-content" id="opt-settings">
                     <div class="checkbox">
@@ -240,70 +368,70 @@
                     </div>
                     
                     <div class="slider-group">
-                        <label for="alpha">⚖️ Thrust Weight (α): <span id="alpha-value">0.5</span></label>
+                        <label for="alpha">Thrust Weight (α): <span id="alpha-value">0.5</span></label>
                         <input type="range" id="alpha" class="slider" min="0" max="1" step="0.1" value="0.5">
                     </div>
                     
                     <div class="slider-group">
-                        <label for="max-temp">🔥 Max Temp Constraint (K): <span id="max-temp-value">4000</span></label>
+                        <label for="max-temp">Max Temperature Constraint (K): <span id="max-temp-value">4000</span></label>
                         <input type="range" id="max-temp" class="slider" min="3000" max="5000" step="100" value="4000">
                     </div>
                 </div>
             </div>
             
-            <button class="btn" onclick="runOptimization()">🚀 Launch Optimization</button>
-            <button class="btn" onclick="clearResults()" id="clear-btn" style="display:none; background: #666;">🗑️ Clear Results</button>
+            <button class="btn" onclick="runOptimization()">Launch Optimization</button>
+            <button class="btn btn-secondary" onclick="clearResults()" id="clear-btn" style="display:none;">Clear Results</button>
         </div>
 
         <div class="main-content">
             <div id="welcome" class="welcome">
-                <h3>🎯 Welcome to Rocket Fuel Optimizer</h3>
+                <h3>Welcome to Rocket Fuel Optimizer</h3>
                 <p>This advanced tool helps you optimize rocket fuel mixtures using:</p>
-                <ul style="text-align: left; margin: 1rem 0; padding-left: 2rem;">
-                    <li>🤖 <strong>Machine Learning</strong>: Predictive models for thrust estimation</li>
-                    <li>🔬 <strong>Physics Simulation</strong>: Real-world combustion dynamics</li>
-                    <li>📊 <strong>Multi-Objective Optimization</strong>: Balance performance vs constraints</li>
-                    <li>📈 <strong>Interactive Visualization</strong>: 3D surfaces and sensitivity analysis</li>
+                <ul>
+                    <li><strong>Machine Learning</strong>: Predictive models for thrust estimation</li>
+                    <li><strong>Physics Simulation</strong>: Real-world combustion dynamics</li>
+                    <li><strong>Multi-Objective Optimization</strong>: Balance performance vs constraints</li>
+                    <li><strong>Interactive Visualization</strong>: 3D surfaces and sensitivity analysis</li>
                 </ul>
                 <p><strong>Get Started:</strong></p>
-                <ol style="text-align: left; margin: 1rem 0; padding-left: 2rem;">
+                <ol>
                     <li>Adjust engine parameters in the sidebar</li>
                     <li>Configure optimization settings</li>
                     <li>Click "Launch Optimization" to begin</li>
                     <li>Explore results with interactive charts</li>
                 </ol>
-                <hr style="margin: 2rem 0; border-color: #333;">
-                <p><em>Configure your parameters in the sidebar to begin optimization</em> ➡️</p>
+                <hr style="margin: 2rem 0; border: none; height: 1px; background: rgba(255,255,255,0.1);">
+                <p style="opacity: 0.7;"><em>Configure your parameters in the sidebar to begin optimization</em></p>
             </div>
 
             <div id="results" class="hidden">
                 <div class="metrics">
                     <div class="metric-card">
                         <div class="metric-value" id="thrust-value">0</div>
-                        <div class="metric-label">🚀 Predicted Thrust</div>
+                        <div class="metric-label">Predicted Thrust (kN)</div>
                         <div class="metric-delta" id="thrust-delta"></div>
                     </div>
                     <div class="metric-card">
                         <div class="metric-value" id="efficiency-value">0</div>
-                        <div class="metric-label">⚡ Efficiency</div>
+                        <div class="metric-label">Efficiency</div>
                         <div class="metric-delta" id="efficiency-delta"></div>
                     </div>
                     <div class="metric-card">
                         <div class="metric-value" id="optimal-thrust-value">0</div>
-                        <div class="metric-label">🎯 Optimal Thrust</div>
+                        <div class="metric-label">Optimal Thrust (kN)</div>
                         <div class="metric-delta" id="optimal-delta"></div>
                     </div>
                     <div class="metric-card">
                         <div class="metric-value" id="r2-value">0</div>
-                        <div class="metric-label">📊 Model R²</div>
-                        <div class="metric-delta" id="r2-delta">Excellent</div>
+                        <div class="metric-label">Model R²</div>
+                        <div class="metric-delta">Excellent</div>
                     </div>
                 </div>
 
                 <div class="tabs">
-                    <button class="tab active" onclick="showTab('tab1')">🌐 3D Surface</button>
-                    <button class="tab" onclick="showTab('tab2')">📊 Sensitivity</button>
-                    <button class="tab" onclick="showTab('tab3')">⚡ Comparison</button>
+                    <button class="tab active" onclick="showTab('tab1')">3D Surface</button>
+                    <button class="tab" onclick="showTab('tab2')">Sensitivity Analysis</button>
+                    <button class="tab" onclick="showTab('tab3')">Configuration Comparison</button>
                 </div>
 
                 <div id="tab1" class="tab-content active">
@@ -324,13 +452,13 @@
                     </div>
                 </div>
 
-                <h3 style="margin-top: 2rem;">🤖 AI Insights</h3>
+                <h3 style="margin-top: 2rem; font-weight: 400;">AI Insights</h3>
                 <div class="insights">
                     <div class="insight-card">
-                        <strong>💡 Optimization Tip:</strong> Higher pressure generally increases thrust but requires stronger materials.
+                        <strong>Optimization Tip:</strong> Higher pressure generally increases thrust but requires stronger materials.
                     </div>
                     <div class="insight-card">
-                        <strong>🔬 Physics Insight:</strong> The O/F ratio affects combustion efficiency and exhaust velocity.
+                        <strong>Physics Insight:</strong> The O/F ratio affects combustion efficiency and exhaust velocity.
                     </div>
                 </div>
             </div>
@@ -338,7 +466,6 @@
     </div>
 
     <script>
-        // Update slider values
         document.querySelectorAll('.slider').forEach(slider => {
             slider.addEventListener('input', function() {
                 document.getElementById(this.id + '-value').textContent = this.value;
@@ -364,29 +491,24 @@
             const temp = parseFloat(document.getElementById('temp').value);
             const isp = parseFloat(document.getElementById('isp').value);
 
-            // Mock calculations
             const thrust = isp * pressure * 9.81 * 0.1 * (0.9 + Math.random() * 0.2);
             const efficiency = thrust / (pressure * isp) * (0.8 + Math.random() * 0.4);
             const optimalThrust = thrust * (1.05 + Math.random() * 0.1);
             const r2 = 0.85 + Math.random() * 0.1;
 
-            // Update metrics
-            document.getElementById('thrust-value').textContent = thrust.toFixed(2) + ' kN';
+            document.getElementById('thrust-value').textContent = thrust.toFixed(2);
             document.getElementById('efficiency-value').textContent = efficiency.toFixed(3);
-            document.getElementById('optimal-thrust-value').textContent = optimalThrust.toFixed(2) + ' kN';
+            document.getElementById('optimal-thrust-value').textContent = optimalThrust.toFixed(2);
             document.getElementById('r2-value').textContent = r2.toFixed(3);
 
-            // Update deltas
             document.getElementById('thrust-delta').textContent = (thrust - 250).toFixed(1);
             document.getElementById('efficiency-delta').textContent = ((efficiency - 0.5) * 100).toFixed(1) + '%';
             document.getElementById('optimal-delta').textContent = '+' + (((optimalThrust - thrust) / thrust * 100)).toFixed(1) + '%';
 
-            // Create charts
             create3DChart(pressure, isp, thrust);
             createSensitivityChart();
             createComparisonChart(ofRatio, pressure, temp, isp, thrust, optimalThrust);
 
-            // Show results
             document.getElementById('welcome').classList.add('hidden');
             document.getElementById('results').classList.remove('hidden');
             document.getElementById('clear-btn').style.display = 'block';
@@ -399,42 +521,23 @@
         }
 
         function create3DChart(pressure, isp, thrust) {
-            const pressureRange = [];
-            const ispRange = [];
-            const thrustSurface = [];
-
-            for (let i = 0; i < 25; i++) {
-                pressureRange.push(1 + i * 9/24);
-                ispRange.push(200 + i * 250/24);
-            }
-
-            for (let i = 0; i < 25; i++) {
-                const row = [];
-                for (let j = 0; j < 25; j++) {
-                    row.push(ispRange[j] * pressureRange[i] * 9.81 * 0.1);
-                }
-                thrustSurface.push(row);
-            }
+            const pressureRange = Array.from({length: 25}, (_, i) => 1 + i * 9/24);
+            const ispRange = Array.from({length: 25}, (_, i) => 200 + i * 250/24);
+            const thrustSurface = pressureRange.map(p => ispRange.map(i => i * p * 9.81 * 0.1));
 
             const trace = {
                 x: pressureRange,
                 y: ispRange,
                 z: thrustSurface,
                 type: 'surface',
-                colorscale: 'Plasma',
+                colorscale: 'Viridis',
                 opacity: 0.8
             };
 
             const currentPoint = {
-                x: [pressure],
-                y: [isp],
-                z: [thrust],
+                x: [pressure], y: [isp], z: [thrust],
                 mode: 'markers+text',
-                marker: {
-                    size: 12,
-                    color: '#ff6b6b',
-                    symbol: 'diamond'
-                },
+                marker: { size: 12, color: '#667eea', symbol: 'diamond' },
                 text: ['Current Point'],
                 textposition: 'top center',
                 type: 'scatter3d',
@@ -442,22 +545,18 @@
             };
 
             const layout = {
-                title: {
-                    text: '🚀 Thrust Performance Surface',
-                    x: 0.5,
-                    font: { size: 20, color: '#fafafa' }
-                },
+                title: { text: 'Thrust Performance Surface', x: 0.5, font: { size: 18, color: '#ffffff' } },
                 scene: {
-                    xaxis: { title: 'Chamber Pressure (MPa)', color: '#fafafa' },
-                    yaxis: { title: 'Specific Impulse (ISP)', color: '#fafafa' },
-                    zaxis: { title: 'Thrust (kN)', color: '#fafafa' },
+                    xaxis: { title: 'Chamber Pressure (MPa)', color: '#ffffff' },
+                    yaxis: { title: 'Specific Impulse (ISP)', color: '#ffffff' },
+                    zaxis: { title: 'Thrust (kN)', color: '#ffffff' },
                     bgcolor: 'rgba(0,0,0,0)',
                     camera: { eye: { x: 1.5, y: 1.5, z: 1.5 } }
                 },
                 height: 500,
                 paper_bgcolor: 'rgba(0,0,0,0)',
                 plot_bgcolor: 'rgba(0,0,0,0)',
-                font: { color: '#fafafa' }
+                font: { color: '#ffffff' }
             };
 
             Plotly.newPlot('chart3d', [trace, currentPoint], layout);
@@ -468,28 +567,20 @@
             const variations = [15.2, 22.8, 8.5, 18.9];
 
             const trace = {
-                x: params,
-                y: variations,
-                type: 'bar',
-                marker: {
-                    color: ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4']
-                },
+                x: params, y: variations, type: 'bar',
+                marker: { color: ['#667eea', '#764ba2', '#f093fb', '#f5576c'] },
                 text: variations.map(v => v.toFixed(1) + '%'),
                 textposition: 'auto'
             };
 
             const layout = {
-                title: {
-                    text: '📊 Parameter Sensitivity Analysis',
-                    x: 0.5,
-                    font: { size: 18, color: '#fafafa' }
-                },
-                xaxis: { title: 'Parameters', color: '#fafafa' },
-                yaxis: { title: 'Thrust Sensitivity (%)', color: '#fafafa' },
+                title: { text: 'Parameter Sensitivity Analysis', x: 0.5, font: { size: 18, color: '#ffffff' } },
+                xaxis: { title: 'Parameters', color: '#ffffff' },
+                yaxis: { title: 'Thrust Sensitivity (%)', color: '#ffffff' },
                 height: 400,
                 paper_bgcolor: 'rgba(0,0,0,0)',
                 plot_bgcolor: 'rgba(0,0,0,0)',
-                font: { color: '#fafafa' },
+                font: { color: '#ffffff' },
                 showlegend: false
             };
 
@@ -498,64 +589,39 @@
 
         function createComparisonChart(ofRatio, pressure, temp, isp, thrust, optimalThrust) {
             const categories = ['O/F Ratio', 'Pressure', 'Temperature', 'Thrust'];
-            
-            const currentVals = [
-                (ofRatio - 2) / 4,
-                (pressure - 1) / 9,
-                (temp - 2500) / 2500,
-                thrust / 500
-            ];
-            
-            const optimalVals = [
-                (ofRatio * 1.05 - 2) / 4,
-                (pressure * 1.1 - 1) / 9,
-                (temp * 1.02 - 2500) / 2500,
-                optimalThrust / 500
-            ];
+            const currentVals = [(ofRatio - 2) / 4, (pressure - 1) / 9, (temp - 2500) / 2500, thrust / 500];
+            const optimalVals = [(ofRatio * 1.05 - 2) / 4, (pressure * 1.1 - 1) / 9, (temp * 1.02 - 2500) / 2500, optimalThrust / 500];
 
             const trace1 = {
                 r: currentVals.concat([currentVals[0]]),
                 theta: categories.concat([categories[0]]),
-                fill: 'toself',
-                name: 'Current Config',
-                line: { color: '#ff6b6b' },
-                fillcolor: 'rgba(255, 107, 107, 0.2)',
+                fill: 'toself', name: 'Current Config',
+                line: { color: '#667eea' },
+                fillcolor: 'rgba(102, 126, 234, 0.2)',
                 type: 'scatterpolar'
             };
 
             const trace2 = {
                 r: optimalVals.concat([optimalVals[0]]),
                 theta: categories.concat([categories[0]]),
-                fill: 'toself',
-                name: 'Optimal Config',
-                line: { color: '#4ecdc4' },
-                fillcolor: 'rgba(78, 205, 196, 0.2)',
+                fill: 'toself', name: 'Optimal Config',
+                line: { color: '#764ba2' },
+                fillcolor: 'rgba(118, 75, 162, 0.2)',
                 type: 'scatterpolar'
             };
 
             const layout = {
-                polar: {
-                    radialaxis: {
-                        visible: true,
-                        range: [0, 1],
-                        color: '#fafafa'
-                    }
-                },
-                title: {
-                    text: '⚡ Configuration Comparison',
-                    x: 0.5,
-                    font: { size: 18, color: '#fafafa' }
-                },
+                polar: { radialaxis: { visible: true, range: [0, 1], color: '#ffffff' } },
+                title: { text: 'Configuration Comparison', x: 0.5, font: { size: 18, color: '#ffffff' } },
                 height: 400,
                 paper_bgcolor: 'rgba(0,0,0,0)',
                 plot_bgcolor: 'rgba(0,0,0,0)',
-                font: { color: '#fafafa' }
+                font: { color: '#ffffff' }
             };
 
             Plotly.newPlot('comparison-chart', [trace1, trace2], layout);
         }
 
-        // Initialize expanders as open
         document.getElementById('engine-params').style.display = 'block';
         document.getElementById('opt-settings').style.display = 'block';
     </script>
