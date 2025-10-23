@@ -1,14 +1,14 @@
 {
   "builds": [
     {
-      "src": "frontend/streamlit_app_standalone.py",
+      "src": "app.py",
       "use": "@vercel/python"
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "frontend/streamlit_app_standalone.py"
+      "dest": "app.py"
     }
   ]
 }
